@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NowDate Luxe Prototype</title>
+    <style>
+      :root {
+        --black: #050706;
+        --night: #0b0f0e;
+        --panel: #111614;
+        --gold: #cda45f;
+        --gold-light: #e6c88f;
+        --cream: #f6f0e7;
+        --muted: #a8a099;
+        --line: rgba(205, 164, 95, 0.3);
+        --white: #ffffff;
+        --shadow: 0 26px 80px rgba(0, 0, 0, 0.45);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--black);
+        color: var(--cream);
+        font-family: "Hiragino Mincho ProN", "Yu Mincho", "Times New Roman", serif;
+        line-height: 1.75;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .sans {
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", sans-serif;
+      }
+
+      .header {
+        position: fixed;
+        z-index: 50;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 26px clamp(22px, 4vw, 54px);
+        color: var(--cream);
+      }
+
+      .brand {
+        display: grid;
+        gap: 0;
+        line-height: 1.1;
+      }
+
+      .brand strong {
+        color: var(--gold-light);
+        font-size: 30px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .brand span {
+        color: var(--gold-light);
+        font-size: 12px;
+        letter-spacing: 0.16em;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .nav {
+        display: flex;
+        gap: 18px;
+        color: rgba(246, 240, 231, 0.82);
+        font-size: 13px;
+      }
+
+      .gold-button {
+        display: inline-flex;
+        min-height: 54px;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        min-width: 210px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 4px;
+        background: linear-gradient(135deg, #e3bd77, #b8853e);
+        color: #15100a;
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        box-shadow: 0 16px 50px rgba(205, 164, 95, 0.28);
+      }
+
+      .hero {
+        position: relative;
+        min-height: 770px;
+        display: grid;
+        align-items: center;
+        overflow: hidden;
+        background:
+          linear-gradient(90deg, rgba(5, 7, 6, 0.98) 0%, rgba(5, 7, 6, 0.86) 28%, rgba(5, 7, 6, 0.28) 58%, rgba(5, 7, 6, 0.45) 100%),
+          linear-gradient(0deg, rgba(5, 7, 6, 1) 0%, rgba(5, 7, 6, 0) 42%),
+          url("assets/luxe-hero.png") center / cover no-repeat;
+      }
+
+      .hero-inner {
+        width: min(1180px, calc(100% - 44px));
+        margin: 0 auto;
+        padding: 150px 0 92px;
+      }
+
+      .hero-copy {
+        max-width: 640px;
+      }
+
+      .eyebrow {
+        margin: 0 0 22px;
+        color: var(--gold-light);
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        margin-bottom: 26px;
+        font-size: clamp(40px, 6vw, 72px);
+        font-weight: 500;
+        line-height: 1.34;
+        letter-spacing: 0.03em;
+      }
+
+      .lead {
+        max-width: 480px;
+        margin-bottom: 32px;
+        color: var(--gold-light);
+        font-size: clamp(17px, 2.2vw, 24px);
+        letter-spacing: 0.08em;
+      }
+
+      .hero-meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+        max-width: 700px;
+        margin-top: 52px;
+      }
+
+      .meta-item {
+        display: grid;
+        grid-template-columns: 44px 1fr;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .meta-icon {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        place-items: center;
+        border: 1px solid var(--gold);
+        border-radius: 50%;
+        color: var(--gold-light);
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 800;
+      }
+
+      .meta-item strong {
+        display: block;
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", sans-serif;
+        font-size: 13px;
+      }
+
+      .meta-item span {
+        display: block;
+        color: rgba(246, 240, 231, 0.72);
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", sans-serif;
+        font-size: 12px;
+      }
+
+      .app-mock {
+        position: absolute;
+        right: clamp(24px, 7vw, 120px);
+        bottom: 34px;
+        width: min(290px, 26vw);
+        min-width: 230px;
+        border: 8px solid #0c0f0e;
+        border-radius: 36px;
+        background: #0a0c0c;
+        box-shadow: var(--shadow);
+      }
+
+      .app-screen {
+        overflow: hidden;
+        min-height: 470px;
+        padding: 24px 18px 18px;
+        border-radius: 28px;
+        background:
+          linear-gradient(180deg, rgba(0, 0, 0, 0.1), #070908 72%),
+          url("assets/luxe-date.png") center top / 180% auto no-repeat;
+      }
+
+      .app-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 150px;
+        color: var(--cream);
+        font-size: 12px;
+        letter-spacing: 0.14em;
+      }
+
+      .profile {
+        display: grid;
+        gap: 10px;
+      }
+
+      .profile h3 {
+        margin-bottom: 0;
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .chip {
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.82);
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", sans-serif;
+        font-size: 11px;
+      }
+
+      .app-actions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .round {
+        display: grid;
+        height: 54px;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 18px;
+      }
+
+      .round.active {
+        background: var(--cream);
+        color: var(--black);
+      }
+
+      .section {
+        padding: clamp(72px, 9vw, 116px) 0;
+      }
+
+      .section.dark {
+        background: linear-gradient(180deg, var(--black), #0c1110);
+      }
+
+      .section.light {
+        background: linear-gradient(180deg, #faf6ef, #f4eee4);
+        color: #17120d;
+      }
+
+      .wrap {
+        width: min(1160px, calc(100% - 44px));
+        margin: 0 auto;
+      }
+
+      .section-head {
+        max-width: 760px;
+        margin: 0 auto 36px;
+        text-align: center;
+      }
+
+      .kicker {
+        margin-bottom: 8px;
+        color: var(--gold);
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", sans-serif;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        margin-bottom: 14px;
+        font-size: clamp(29px, 4vw, 48px);
+        font-weight: 500;
+        line-height: 1.35;
+        letter-spacing: 0.06em;
+      }
+
+      .section-head p {
+        color: var(--muted);
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+      }
+
+      .feature-card {
+        overflow: hidden;
+      }
+
+      .feature-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1.55;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .feature-card h3 {
+        margin: 18px 0 8px;
+        color: var(--gold-light);
+        font-size: 22px;
+        font-weight: 500;
+        text-align: center;
+      }
+
+      .feature-card p {
+        margin: 0;
+        color: rgba(246, 240, 231, 0.74);
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", sans-serif;
+        font-size: 14px;
+        text-align: center;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        align-items: start;
+      }
+
+      .step {
+        position: relative;
+        text-align: center;
+      }
+
+      .step::after {
+        content: "";
+        position: absolute;
+        top: 40px;
+        left: calc(50% + 52px);
+        width: calc(100% - 86px);
+        border-top: 1px dashed rgba(205, 164, 95, 0.42);
+      }
+
+      .step:last-child::after {
+        display: none;
+      }
+
+      .step-icon {
+        display: grid;
+        width: 82px;
+        height: 82px;
+        place-items: center;
+        margin: 0 auto 16px;
+        border-radius: 50%;
+        background: #ffffff;
+        color: #17120d;
+        box-shadow: 0 14px 40px rgba(70, 44, 16, 0.08);
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 28px;
+      }
+
+      .step-num {
+        color: var(--gold);
+        font-size: 16px;
+        letter-spacing: 0.12em;
+      }
+
+      .step h3 {
+        margin: 8px 0 6px;
+        font-size: 20px;
+        font-weight: 500;
+      }
+
+      .step p {
+        color: #6e6256;
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", sans-serif;
+        font-size: 13px;
+      }
+
+      .scene-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .scene-card img {
+        width: 100%;
+        aspect-ratio: 1.35;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .scene-card p {
+        margin: 10px 0 0;
+        color: rgba(246, 240, 231, 0.82);
+        text-align: center;
+        font-size: 14px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 28px;
+        margin-top: 26px;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat strong {
+        display: block;
+        color: var(--gold);
+        font-size: clamp(42px, 7vw, 72px);
+        font-weight: 500;
+        line-height: 1;
+      }
+
+      .stat span {
+        display: block;
+        color: #4f463c;
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", sans-serif;
+        font-weight: 800;
+      }
+
+      .cta {
+        display: grid;
+        grid-template-columns: minmax(260px, 430px) 1fr;
+        gap: clamp(28px, 6vw, 80px);
+        align-items: center;
+      }
+
+      .cta img {
+        width: 100%;
+        aspect-ratio: 1.45;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .cta h2 {
+        max-width: 620px;
+      }
+
+      .footer {
+        border-top: 1px solid rgba(205, 164, 95, 0.22);
+        background: #070908;
+        color: rgba(246, 240, 231, 0.66);
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo", sans-serif;
+        font-size: 12px;
+      }
+
+      .footer-inner {
+        width: min(1160px, calc(100% - 44px));
+        min-height: 74px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      @media (max-width: 980px) {
+        .nav {
+          display: none;
+        }
+
+        .hero {
+          min-height: 760px;
+          background-position: 58% center;
+        }
+
+        .app-mock {
+          position: relative;
+          right: auto;
+          bottom: auto;
+          width: min(300px, 86vw);
+          margin: 32px 0 0;
+        }
+
+        .hero-meta,
+        .feature-grid,
+        .steps,
+        .scene-row,
+        .stats,
+        .cta {
+          grid-template-columns: 1fr;
+        }
+
+        .step::after {
+          display: none;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .header {
+          padding: 18px;
+        }
+
+        .brand strong {
+          font-size: 23px;
+        }
+
+        .header-actions .gold-button {
+          display: none;
+        }
+
+        .hero-inner,
+        .wrap,
+        .footer-inner {
+          width: min(100% - 28px, 520px);
+        }
+
+        .hero-meta {
+          gap: 14px;
+        }
+
+        .gold-button {
+          width: 100%;
+        }
+
+        .footer-inner {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 18px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <a class="brand" href="#">
+        <strong>NowDate</strong>
+        <span>ナウデート</span>
+      </a>
+      <div class="header-actions sans">
+        <nav class="nav" aria-label="主要ナビゲーション">
+          <a href="#about">特徴</a>
+          <a href="#how">使い方</a>
+          <a href="#scene">シーン</a>
+        </nav>
+        <a class="gold-button" href="#entry">無料で登録する <span aria-hidden="true">›</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">SAME-DAY DATE MATCHING</p>
+            <h1>まっすぐ帰るには、少し惜しい夜がある。</h1>
+            <p class="lead">忙しいあなたのための、当日デートマッチングアプリ</p>
+            <a class="gold-button" href="#entry">無料で登録する <span aria-hidden="true">›</span></a>
+            <div class="hero-meta">
+              <div class="meta-item">
+                <span class="meta-icon">↯</span>
+                <div>
+                  <strong>最短30分でマッチ</strong>
+                  <span>今日会える相手だけ</span>
+                </div>
+              </div>
+              <div class="meta-item">
+                <span class="meta-icon">◇</span>
+                <div>
+                  <strong>審査制だから安心</strong>
+                  <span>本人確認済み</span>
+                </div>
+              </div>
+              <div class="meta-item">
+                <span class="meta-icon">□</span>
+                <div>
+                  <strong>メッセージ不要</strong>
+                  <span>面倒なやり取りなし</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="app-mock" aria-label="アプリ画面イメージ">
+            <div class="app-screen">
+              <div class="app-top">
+                <span>9:41</span>
+                <span>NowDate</span>
+                <span>≡</span>
+              </div>
+              <div class="profile">
+                <h3>27歳 / CA</h3>
+                <div class="chips">
+                  <span class="chip">本人確認済み</span>
+                  <span class="chip">ワイン</span>
+                  <span class="chip">カフェ巡り</span>
+                </div>
+                <p class="sans" style="color: rgba(255,255,255,0.74); font-size: 12px">
+                  本日 20:00 / 銀座 / 60分
+                </p>
+                <div class="app-actions">
+                  <span class="round">×</span>
+                  <span class="round active">♥</span>
+                  <span class="round">★</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section dark" id="about">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="kicker">ABOUT NOWDATE</p>
+            <h2>予定していなかった夜が、いちばん楽しい。</h2>
+            <p class="sans">
+              NowDateは、社会人の「今日会える」出会いを提供する即日デートマッチングアプリです。
+              条件を選ぶだけで、相手・時間・公開店舗を自動で提案します。
+            </p>
+          </div>
+          <div class="feature-grid">
+            <article class="feature-card">
+              <img src="assets/luxe-table.png" alt="上質なラウンジの予約席">
+              <h3>上質な出会いを、すぐに</h3>
+              <p>審査制と公開店舗で、安心して会える環境を整えます。</p>
+            </article>
+            <article class="feature-card">
+              <img src="assets/luxe-phone.png" alt="ラウンジでスマートフォンを確認する手元">
+              <h3>最短30分でマッチ</h3>
+              <p>今日会える人だけを対象に、自動で候補を提示します。</p>
+            </article>
+            <article class="feature-card">
+              <img src="assets/luxe-date.png" alt="夜景の見えるラウンジで会話する男女">
+              <h3>提携店でスマートに</h3>
+              <p>場所選びの手間をなくし、公開店舗で待ち合わせ。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section light" id="how">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="kicker">HOW IT WORKS</p>
+            <h2>使い方は、驚くほどシンプル。</h2>
+          </div>
+          <div class="steps">
+            <article class="step">
+              <div class="step-icon">▣</div>
+              <div class="step-num">01</div>
+              <h3>今すぐ登録</h3>
+              <p>審査を通過すると、すぐに利用可能に。</p>
+            </article>
+            <article class="step">
+              <div class="step-icon">⌕</div>
+              <div class="step-num">02</div>
+              <h3>条件を選ぶ</h3>
+              <p>エリアや時間など、希望条件を設定。</p>
+            </article>
+            <article class="step">
+              <div class="step-icon">♡</div>
+              <div class="step-num">03</div>
+              <h3>マッチング</h3>
+              <p>相手と場所を確認してから成立。</p>
+            </article>
+            <article class="step">
+              <div class="step-icon">♢</div>
+              <div class="step-num">04</div>
+              <h3>今夜、会う</h3>
+              <p>提携店で待ち合わせ、スマートにデートへ。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="scene">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="kicker">SCENE</p>
+            <h2>どんな夜にも、NowDateを。</h2>
+          </div>
+          <div class="scene-row">
+            <article class="scene-card">
+              <img src="assets/luxe-hero.png" alt="夜のラウンジでスマートフォンを見る男性">
+              <p>会議が早く終わった夜に</p>
+            </article>
+            <article class="scene-card">
+              <img src="assets/luxe-table.png" alt="夜景の見える予約席">
+              <p>一人で帰るのが惜しい夜に</p>
+            </article>
+            <article class="scene-card">
+              <img src="assets/luxe-date.png" alt="夜景の見えるラウンジで乾杯する男女">
+              <p>新しい出会いがほしい夜に</p>
+            </article>
+            <article class="scene-card">
+              <img src="assets/luxe-phone.png" alt="スマートフォンでマッチ候補を見る手元">
+              <p>特別な予定がない夜に</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section light">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="kicker">TRUSTED BY PROFESSIONALS</p>
+            <h2>忙しい社会人に選ばれています。</h2>
+          </div>
+          <div class="stats sans">
+            <div class="stat">
+              <span>審査通過率</span>
+              <strong>20%</strong>
+              <p>以下</p>
+            </div>
+            <div class="stat">
+              <span>累計マッチング数</span>
+              <strong>10万</strong>
+              <p>件突破</p>
+            </div>
+            <div class="stat">
+              <span>会員満足度</span>
+              <strong>94%</strong>
+              <p>※自社調べ</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="entry">
+        <div class="wrap cta">
+          <img src="assets/luxe-phone.png" alt="スマートフォンでデート候補を確認する">
+          <div>
+            <p class="kicker">START TONIGHT</p>
+            <h2>今夜の予定を、アップデートしよう。</h2>
+            <p class="sans" style="color: rgba(246,240,231,0.76); margin-bottom: 28px">
+              相手・時間・場所を確認してから成立。忙しい夜にも、無理なく会える体験を。
+            </p>
+            <a class="gold-button" href="mailto:hello@example.com?subject=NowDate%20%E4%BA%8B%E5%89%8D%E7%99%BB%E9%8C%B2">
+              無料で登録する <span aria-hidden="true">›</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="brand">
+          <strong style="font-size: 22px">NowDate</strong>
+          <span>ナウデート</span>
+        </div>
+        <div>利用規約　プライバシーポリシー　お問い合わせ</div>
+      </div>
+    </footer>
+  </body>
+</html>
