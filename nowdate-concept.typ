@@ -9,7 +9,7 @@
 )
 
 #set text(
-  font: ("Hiragino Sans", "Noto Sans CJK JP", "Yu Gothic"),
+  font: ("Hiragino Sans", "Hiragino Kaku Gothic ProN", "Apple SD Gothic Neo"),
   size: 10.2pt,
   lang: "ja",
 )
