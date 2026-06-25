@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NowDate | 今日、会う予定が決まる。</title>
+    <meta
+      name="description"
+      content="探さない。やりとりしない。時間・場所・相手の条件をもとに、今会える相手と自動マッチ。"
+    >
+    <style>
+      :root {
+        --ink: #18201f;
+        --muted: #5d6865;
+        --line: #dfe5e1;
+        --paper: #fbfaf6;
+        --mist: #edf5f0;
+        --mint: #cfeee3;
+        --leaf: #1f745e;
+        --rose: #d95e74;
+        --amber: #f0b85a;
+        --clay: #8d5d46;
+        --white: #ffffff;
+        --shadow: 0 24px 70px rgba(24, 32, 31, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+          "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+        line-height: 1.7;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .site-header {
+        position: fixed;
+        z-index: 20;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 18px clamp(18px, 4vw, 56px);
+        color: var(--white);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--rose), var(--amber));
+        box-shadow: 0 10px 30px rgba(217, 94, 116, 0.32);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 14px;
+      }
+
+      .nav a {
+        text-shadow: 0 1px 12px rgba(0, 0, 0, 0.24);
+      }
+
+      .nav-cta,
+      .button {
+        display: inline-flex;
+        min-height: 46px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--white);
+        color: var(--ink);
+        font-weight: 800;
+        line-height: 1;
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
+      }
+
+      .nav-cta {
+        padding: 0 18px;
+      }
+
+      .hero {
+        position: relative;
+        min-height: 92vh;
+        display: grid;
+        align-items: end;
+        overflow: hidden;
+        color: var(--white);
+        background:
+          linear-gradient(90deg, rgba(12, 20, 18, 0.84), rgba(12, 20, 18, 0.36) 48%, rgba(12, 20, 18, 0.08)),
+          linear-gradient(0deg, rgba(12, 20, 18, 0.7), rgba(12, 20, 18, 0) 46%),
+          url("assets/hero-confirmed-plan.png") center / cover no-repeat;
+      }
+
+      .hero-inner {
+        width: min(1160px, calc(100% - 36px));
+        margin: 0 auto;
+        padding: 132px 0 72px;
+      }
+
+      .hero-copy {
+        max-width: 720px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 20px;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .signal {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #78f0bf;
+        box-shadow: 0 0 0 7px rgba(120, 240, 191, 0.16);
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 680px;
+        margin-bottom: 20px;
+        font-size: clamp(42px, 8vw, 92px);
+        line-height: 1.02;
+        letter-spacing: 0;
+      }
+
+      .hero-lead {
+        max-width: 620px;
+        margin-bottom: 30px;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: clamp(17px, 2.1vw, 23px);
+        line-height: 1.75;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .button {
+        padding: 0 24px;
+        cursor: pointer;
+      }
+
+      .button.primary {
+        background: linear-gradient(135deg, var(--rose), #ef9467);
+        color: var(--white);
+      }
+
+      .button.secondary {
+        background: rgba(255, 255, 255, 0.14);
+        color: var(--white);
+        border: 1px solid rgba(255, 255, 255, 0.34);
+        box-shadow: none;
+        backdrop-filter: blur(16px);
+      }
+
+      .trust-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 26px;
+      }
+
+      .trust-row span {
+        display: inline-flex;
+        align-items: center;
+        min-height: 34px;
+        padding: 0 12px;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 13px;
+        font-weight: 700;
+        backdrop-filter: blur(12px);
+      }
+
+      .hero-panel {
+        width: min(1160px, calc(100% - 36px));
+        margin: -50px auto 0;
+        position: relative;
+        z-index: 4;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .status-strip,
+      .phone-shell {
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.86);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(24px);
+      }
+
+      .status-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1px;
+        overflow: hidden;
+        border-radius: 8px;
+      }
+
+      .metric {
+        padding: 22px;
+        background: rgba(255, 255, 255, 0.62);
+      }
+
+      .metric strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: clamp(24px, 3vw, 38px);
+        line-height: 1;
+      }
+
+      .metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .phone-shell {
+        min-height: 300px;
+        padding: 18px;
+        border-radius: 8px;
+      }
+
+      .phone-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .toggle {
+        display: inline-flex;
+        width: 58px;
+        height: 32px;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 4px;
+        border-radius: 999px;
+        background: var(--leaf);
+      }
+
+      .toggle::after {
+        content: "";
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--white);
+      }
+
+      .match-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--white);
+      }
+
+      .match-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 16px;
+        background: var(--mist);
+      }
+
+      .match-head b {
+        display: block;
+        font-size: 18px;
+      }
+
+      .badge {
+        align-self: flex-start;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: var(--mint);
+        color: #155445;
+        font-size: 12px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .match-list {
+        display: grid;
+        gap: 10px;
+        padding: 16px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .match-list div {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid #edf0ed;
+        padding-bottom: 10px;
+      }
+
+      .match-list div:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .match-list strong {
+        color: var(--ink);
+      }
+
+      main {
+        overflow: hidden;
+      }
+
+      .section {
+        padding: clamp(70px, 9vw, 118px) 0;
+      }
+
+      .section.alt {
+        background: var(--white);
+      }
+
+      .wrap {
+        width: min(1120px, calc(100% - 36px));
+        margin: 0 auto;
+      }
+
+      .section-head {
+        max-width: 760px;
+        margin-bottom: 34px;
+      }
+
+      .section-kicker {
+        margin-bottom: 10px;
+        color: var(--rose);
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      h2 {
+        margin-bottom: 14px;
+        font-size: clamp(31px, 4.8vw, 58px);
+        line-height: 1.12;
+        letter-spacing: 0;
+      }
+
+      .section-head p {
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      .problem {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 430px);
+        gap: clamp(24px, 5vw, 70px);
+        align-items: center;
+      }
+
+      .friction-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .friction-list p {
+        margin: 0;
+        padding: 16px 18px;
+        border-left: 4px solid var(--amber);
+        background: #fff7e8;
+        color: #60452d;
+        font-weight: 700;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .step,
+      .value-card,
+      .safety-item,
+      .audience-card,
+      .price-card,
+      .faq-item {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--white);
+      }
+
+      .step {
+        padding: 24px;
+      }
+
+      .step-num {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        margin-bottom: 18px;
+        border-radius: 50%;
+        background: var(--ink);
+        color: var(--white);
+        font-weight: 900;
+      }
+
+      h3 {
+        margin-bottom: 8px;
+        font-size: 20px;
+        line-height: 1.35;
+      }
+
+      .step p,
+      .value-card p,
+      .safety-item p,
+      .audience-card p,
+      .price-card p,
+      .faq-item p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .values {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .value-card {
+        min-height: 240px;
+        padding: 24px;
+      }
+
+      .icon {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        place-items: center;
+        margin-bottom: 18px;
+        border-radius: 50%;
+        background: var(--mist);
+        color: var(--leaf);
+        font-weight: 900;
+      }
+
+      .safety-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .safety-item {
+        min-height: 132px;
+        padding: 18px;
+      }
+
+      .audiences {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .audience-card {
+        padding: clamp(24px, 4vw, 36px);
+      }
+
+      .audience-card ul,
+      .price-card ul {
+        display: grid;
+        gap: 10px;
+        margin: 18px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .audience-card li,
+      .price-card li {
+        position: relative;
+        padding-left: 22px;
+        color: var(--muted);
+      }
+
+      .audience-card li::before,
+      .price-card li::before {
+        content: "";
+        position: absolute;
+        top: 0.78em;
+        left: 0;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--rose);
+      }
+
+      .pricing {
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .price-card {
+        padding: 28px;
+      }
+
+      .price-card.featured {
+        border-color: rgba(31, 116, 94, 0.5);
+        background: linear-gradient(180deg, #f4fffa, var(--white));
+      }
+
+      .price {
+        display: flex;
+        align-items: end;
+        gap: 8px;
+        margin: 12px 0;
+      }
+
+      .price strong {
+        font-size: clamp(34px, 5vw, 54px);
+        line-height: 1;
+      }
+
+      .note {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-radius: 8px;
+        background: #fff2f5;
+        color: #7d3544;
+        font-weight: 800;
+      }
+
+      .faq-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .faq-item {
+        padding: 22px;
+      }
+
+      .final-cta {
+        color: var(--white);
+        background:
+          linear-gradient(90deg, rgba(24, 32, 31, 0.92), rgba(31, 116, 94, 0.76)),
+          url("assets/hero-confirmed-plan.png") center 62% / cover no-repeat;
+      }
+
+      .final-cta .wrap {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 28px;
+        align-items: center;
+      }
+
+      .final-cta h2 {
+        margin-bottom: 8px;
+      }
+
+      .final-cta p {
+        margin-bottom: 0;
+        color: rgba(255, 255, 255, 0.82);
+      }
+
+      footer {
+        padding: 28px 0;
+        background: var(--ink);
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 13px;
+      }
+
+      footer .wrap {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      @media (max-width: 860px) {
+        .nav a:not(.nav-cta) {
+          display: none;
+        }
+
+        .hero {
+          min-height: 88vh;
+          background-position: 58% center;
+        }
+
+        .hero-panel,
+        .problem,
+        .pricing,
+        .final-cta .wrap {
+          grid-template-columns: 1fr;
+        }
+
+        .status-strip,
+        .steps,
+        .values,
+        .safety-grid,
+        .audiences,
+        .faq-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .status-strip {
+          margin-top: 0;
+        }
+
+        .phone-shell {
+          min-height: auto;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .site-header {
+          padding: 14px 18px;
+        }
+
+        .brand span:last-child {
+          font-size: 15px;
+        }
+
+        .nav-cta {
+          min-height: 40px;
+          padding: 0 13px;
+          font-size: 13px;
+        }
+
+        .hero-inner {
+          padding-top: 112px;
+        }
+
+        .hero-actions .button {
+          width: 100%;
+        }
+
+        .hero-panel {
+          margin-top: -26px;
+        }
+
+        .metric {
+          padding: 18px;
+        }
+
+        footer .wrap {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header" aria-label="サイトヘッダー">
+      <a class="brand" href="#">
+        <span class="brand-mark" aria-hidden="true">✓</span>
+        <span>NowDate</span>
+      </a>
+      <nav class="nav" aria-label="主要ナビゲーション">
+        <a href="#how">使い方</a>
+        <a href="#safety">安心設計</a>
+        <a href="#price">料金</a>
+        <a class="nav-cta" href="#entry">事前登録</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="signal"></span> 東京エリアから順次開始予定</p>
+            <h1>今日、会う予定が決まる。</h1>
+            <p class="hero-lead">
+              探さない。やりとりしない。時間・場所・相手の条件をもとに、
+              今会える相手と自動マッチ。
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#entry">今すぐはじめる <span aria-hidden="true">→</span></a>
+              <a class="button secondary" href="#how">仕組みを見る</a>
+            </div>
+            <div class="trust-row" aria-label="安心ポイント">
+              <span>本人確認制</span>
+              <span>公開店舗のみ</span>
+              <span>成立前に最終確認</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="hero-panel" aria-label="サービス概要">
+        <div class="status-strip">
+          <div class="metric">
+            <strong>30分後</strong>
+            <span>最短の待ち合わせ目安</span>
+          </div>
+          <div class="metric">
+            <strong>5分</strong>
+            <span>最終確認の回答時間</span>
+          </div>
+          <div class="metric">
+            <strong>60分</strong>
+            <span>初回に選べる短時間デート</span>
+          </div>
+        </div>
+        <div class="phone-shell" aria-label="アプリ画面例">
+          <div class="phone-top">
+            <div>
+              <strong>今から会える</strong>
+              <div style="color: var(--muted); font-size: 13px">ONにすると自動マッチを開始</div>
+            </div>
+            <span class="toggle" aria-hidden="true"></span>
+          </div>
+          <div class="match-card">
+            <div class="match-head">
+              <div>
+                <b>最終確認待ち</b>
+                <span style="color: var(--muted); font-size: 13px">条件内の相手が見つかりました</span>
+              </div>
+              <span class="badge">本人確認済み</span>
+            </div>
+            <div class="match-list">
+              <div><span>開始</span><strong>本日 20:00</strong></div>
+              <div><span>場所</span><strong>渋谷の提携カフェバー</strong></div>
+              <div><span>時間</span><strong>60分</strong></div>
+              <div><span>会い方</span><strong>軽く1杯</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="section" id="problem">
+        <div class="wrap problem">
+          <div class="section-head">
+            <p class="section-kicker">WHY</p>
+            <h2>マッチしても、会うまでが長すぎる。</h2>
+            <p>
+              いいね、メッセージ、日程調整、店選び。会いたい気持ちは今日あるのに、
+              予定が決まるのは何日も先。NowDateは、会うまでの面倒をなくします。
+            </p>
+          </div>
+          <div class="friction-list">
+            <p>返信を待っているうちに予定が流れる。</p>
+            <p>会う意思がある人なのか分からない。</p>
+            <p>場所や時間を決めるだけで疲れる。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="how">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="section-kicker">HOW IT WORKS</p>
+            <h2>3ステップで、今日の予定が決まる。</h2>
+            <p>スワイプも長いやりとりも不要。条件を出したら、あとは最終確認だけ。</p>
+          </div>
+          <div class="steps">
+            <article class="step">
+              <div class="step-num">1</div>
+              <h3>今から会えるをON</h3>
+              <p>エリア、開始時間、会い方、所要時間を選びます。</p>
+            </article>
+            <article class="step">
+              <div class="step-num">2</div>
+              <h3>条件内で自動マッチ</h3>
+              <p>本人確認済みで、今日会う意思がある相手だけを紹介します。</p>
+            </article>
+            <article class="step">
+              <div class="step-num">3</div>
+              <h3>確認して成立</h3>
+              <p>相手・時間・場所・キャンセル条件を見てから決定できます。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="section-kicker">CORE VALUE</p>
+            <h2>自動なのに、勝手に決まらない。</h2>
+            <p>
+              NowDateの自動マッチは、ラクさと納得感の両方を前提にしています。
+              あなたの許容条件から外れたマッチは成立しません。
+            </p>
+          </div>
+          <div class="values">
+            <article class="value-card">
+              <div class="icon" aria-hidden="true">✓</div>
+              <h3>条件内でマッチ</h3>
+              <p>年齢帯、エリア、時間、会い方など、先に選んだ条件をもとに紹介します。</p>
+            </article>
+            <article class="value-card">
+              <div class="icon" aria-hidden="true">↺</div>
+              <h3>成立前に最終確認</h3>
+              <p>相手の基本情報、開始時間、場所、費用条件を確認してから成立します。</p>
+            </article>
+            <article class="value-card">
+              <div class="icon" aria-hidden="true">⌂</div>
+              <h3>予約済みの公開店舗</h3>
+              <p>初回はカフェ・バー・飲食店など、人目のある提携店舗を中心に案内します。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="safety">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="section-kicker">SAFETY</p>
+            <h2>初対面だから、安全設計を最初から。</h2>
+            <p>便利さだけでなく、不安を減らすためのルールをプロダクトの中心に置いています。</p>
+          </div>
+          <div class="safety-grid">
+            <article class="safety-item">
+              <h3>本人確認必須</h3>
+              <p>登録時に本人確認を行います。</p>
+            </article>
+            <article class="safety-item">
+              <h3>顔写真認証</h3>
+              <p>プロフィールの信頼性を高めます。</p>
+            </article>
+            <article class="safety-item">
+              <h3>公開店舗のみ</h3>
+              <p>初回は人目のある場所に限定。</p>
+            </article>
+            <article class="safety-item">
+              <h3>相互評価</h3>
+              <p>低評価ユーザーは利用を制限。</p>
+            </article>
+            <article class="safety-item">
+              <h3>通報・ブロック</h3>
+              <p>不安な相手をすぐに制限できます。</p>
+            </article>
+            <article class="safety-item">
+              <h3>ドタキャン対策</h3>
+              <p>成立後のキャンセル条件を明示。</p>
+            </article>
+            <article class="safety-item">
+              <h3>チェックイン</h3>
+              <p>来店状況をアプリ上で確認。</p>
+            </article>
+            <article class="safety-item">
+              <h3>24時間監視</h3>
+              <p>違反報告に対応する運営体制。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="section-kicker">FOR USERS</p>
+            <h2>会いたい日の温度感に合わせて。</h2>
+          </div>
+          <div class="audiences">
+            <article class="audience-card">
+              <h3>急な予定でも、安心して会える。</h3>
+              <p>
+                相手の条件、会う場所、時間、キャンセル条件を事前に確認。
+                長いやりとりなしで、今日会える相手だけを紹介します。
+              </p>
+              <ul>
+                <li>初期は女性無料で開始予定</li>
+                <li>本人確認済みの相手のみ</li>
+                <li>初回は短時間設定が可能</li>
+              </ul>
+            </article>
+            <article class="audience-card">
+              <h3>メッセージで終わらない出会いへ。</h3>
+              <p>
+                会う意思がある人だけが、今日の空き時間を登録。
+                マッチ後は、時間も場所もスムーズに決まります。
+              </p>
+              <ul>
+                <li>無駄なメッセージを削減</li>
+                <li>店選びや日程調整が不要</li>
+                <li>成立前に相手と条件を確認</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="price">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="section-kicker">PRICE</p>
+            <h2>成立したときだけ、わかりやすく。</h2>
+            <p>相手・時間・場所を確認する前に、成立料は発生しません。</p>
+          </div>
+          <div class="pricing">
+            <article class="price-card">
+              <h3>Free</h3>
+              <p>まずは今日会える条件を登録。</p>
+              <div class="price"><strong>¥0</strong><span>から</span></div>
+              <ul>
+                <li>プロフィール作成</li>
+                <li>今から会える登録</li>
+                <li>自動マッチ候補の通知</li>
+              </ul>
+            </article>
+            <article class="price-card featured">
+              <h3>Standard</h3>
+              <p>成立ごとに、透明な料金で。</p>
+              <div class="price"><strong>¥3,000〜</strong><span>成立ごと</span></div>
+              <ul>
+                <li>男性向け月額プランを提供予定</li>
+                <li>初回トライアル価格を予定</li>
+                <li>成立後キャンセルは条件に応じて手数料</li>
+              </ul>
+              <div class="note">成立前キャンセルは無料。最終確認後にだけ料金が確定します。</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="section-kicker">FAQ</p>
+            <h2>よくある質問</h2>
+          </div>
+          <div class="faq-grid">
+            <article class="faq-item">
+              <h3>本当に今日会えますか？</h3>
+              <p>同じ時間帯・エリアで会う意思がある相手がいる場合に、自動マッチが届きます。</p>
+            </article>
+            <article class="faq-item">
+              <h3>勝手に確定しますか？</h3>
+              <p>確定前に、相手・場所・時間・キャンセル条件を確認できます。</p>
+            </article>
+            <article class="faq-item">
+              <h3>相手の情報は見られますか？</h3>
+              <p>顔写真、年齢帯、会話タグ、本人確認状況などを成立前に表示します。</p>
+            </article>
+            <article class="faq-item">
+              <h3>既婚者は使えますか？</h3>
+              <p>独身者向けサービスとして設計し、利用資格に反する登録を制限します。</p>
+            </article>
+            <article class="faq-item">
+              <h3>店は予約されていますか？</h3>
+              <p>提携店舗の空き枠をもとに、成立後に予約済みの場所を案内します。</p>
+            </article>
+            <article class="faq-item">
+              <h3>地方でも使えますか？</h3>
+              <p>初期は東京の一部エリアから開始し、密度を作ってから順次拡大します。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section final-cta" id="entry">
+        <div class="wrap">
+          <div>
+            <p class="section-kicker" style="color: #9ef0cb">PRE ENTRY</p>
+            <h2>今日、誰かと会いたい日に。</h2>
+            <p>東京エリアの先行案内を受け取る。</p>
+          </div>
+          <a class="button primary" href="mailto:hello@example.com?subject=NowDate%20%E4%BA%8B%E5%89%8D%E7%99%BB%E9%8C%B2">事前登録する <span aria-hidden="true">→</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <span>© 2026 NowDate</span>
+        <span>本人確認制 / 公開店舗のみ / 成立前に最終確認</span>
+      </div>
+    </footer>
+  </body>
+</html>
